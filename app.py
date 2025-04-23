@@ -5,11 +5,11 @@ from feature import seq_to_features_with_properties
 
 app = Flask(__name__)
 
-with open("model.pkl", "rb") as f:
-    model = pickle.load(f)
+import joblib
 
-with open("selector.pkl", "rb") as f:
-    selector = pickle.load(f)
+# 使用 joblib 加载模型和选择器
+model = joblib.load("model.pkl")
+selector = joblib.load("selector.pkl")
 
 @app.route("/", methods=["GET", "POST"])
 def index():
