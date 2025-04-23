@@ -1,0 +1,17 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Umami Peptide Predictor</title>
+</head>
+<body>
+    <h2>Enter a peptide sequence:</h2>
+    <form method="POST">
+        <input type="text" name="sequence" required>
+        <input type="submit" value="Predict">
+    </form>
+    {% if result %}
+    <h3>Prediction Result: {{ result }}</h3>
+    {% endif %}
+</body>
+</html>
