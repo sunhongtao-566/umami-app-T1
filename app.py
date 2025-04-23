@@ -1,26 +1,27 @@
-
 from flask import Flask, request, render_template
 import pickle
 import numpy as np
+from feature import seq_to_features_with_properties
 
 app = Flask(__name__)
 
-# 加载模型
 with open("model.pkl", "rb") as f:
     model = pickle.load(f)
 
-# 加载特征处理函数
-from feature import seq_to_features_with_properties
+with open("selector.pkl", "rb") as f:
+    selector = pickle.load(f)
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    result = None
+    prediction = None
     if request.method == "POST":
         sequence = request.form["sequence"]
-        features = np.array([seq_to_features_with_properties(sequence, 200)])
-        prediction = model.predict(features)[0]
-        result = "Umami" if prediction == 1 else "Not Umami"
-    return render_template("index.html", result=result)
+        max_len = 200
+        features = np.array([seq_to_features_with_properties(sequence, max_len)])
+        reduced = selector.transform(features)
+        result = model.predict(reduced)
+        prediction = "Umami" if result[0] == 1 else "Not Umami"
+    return render_template("index.html", prediction=prediction)
 
 if __name__ == "__main__":
     app.run(debug=True)
